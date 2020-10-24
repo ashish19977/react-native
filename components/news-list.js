@@ -7,7 +7,7 @@ const NewsListComponent = props => {
         <FlatList
             data = {props.data}
             initialNumToRender={10}
-            renderItem={({ item }) => <ItemComponent data = { item } />}
+            renderItem={({ item }) => <ItemComponent data = { item } selectedCountry = { props.selectedCountry }/>}
             keyExtractor={item => item.title}
             ListEmptyComponent = { () => <ActivityIndicator color='black' size='large'/> }
         />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-
+import { speak } from '../services'
 
 const colors = [ 'rgba(218,247,166,', 'rgba(255,195,0,', 'rgba(255,87,51,',
     'rgba(199,0,57,', 'rgba(247,67,132,', 'rgba(67,110,247,',
@@ -8,9 +8,24 @@ const colors = [ 'rgba(218,247,166,', 'rgba(255,195,0,', 'rgba(255,87,51,',
     'rgba(22,160,133,', 'rgba(211,84,0,'
 ]
 
-
-const ItemComponent = ({ data }) => {
+//en-IN hi-IN
+const ItemComponent = ({ data, selectedCountry }) => {
     const bgColor = colors[Math.floor(Math.random()*colors.length)]
+    
+    const detail = data.description || data.content
+
+    const [ isPlaying, setIsPlaying ] = useState(false)
+
+    const playNews = async news => {
+        if( isPlaying )
+            return
+        try{
+            await speak( news, { cb: setIsPlaying, selectedCountry } )
+        }catch(e){
+            setIsPlaying(false)
+        }
+        
+    }
     
     return(
         <TouchableOpacity style={[styles.main, { backgroundColor: bgColor+'1)'}]}>
@@ -31,10 +46,12 @@ const ItemComponent = ({ data }) => {
             <View style={styles.detailsView}>
             
                 <View style={styles.detail} >
-                    <Text style={styles.txt}> {data.content || data.description || data.title} </Text>
+                    <Text style={styles.txt}> { detail } </Text>
                 </View>
-                
                 <View style={styles.source}>
+                    <TouchableOpacity style={ styles.plyBtn } onPress={() => playNews(detail)}>
+                        <Text>{ isPlaying ? 'Playing ...' : 'Play'  }</Text>
+                    </TouchableOpacity>
                     <Text>{data.source.name || 'Anonomous'}</Text>
                 </View>
             
@@ -73,8 +90,17 @@ const styles = StyleSheet.create({
         maxHeight:'80%'
     },
     txt:{ padding: 5, textAlign: "left",color: 'rgba(0,0,0,.8)' },
-    source: { flexDirection:'row',justifyContent:'flex-end',padding: 5 },
-    detail: { flex:1,flexDirection:'row', padding: 5 }
+    source: { flexDirection:'row',justifyContent:'space-between',padding: 3},
+    detail: { flex:1, flexDirection:'row', padding: 5 },
+    plyBtn:{
+        borderColor:'white',
+        borderWidth: 1,
+        paddingHorizontal: 5,
+        paddingVertical: 1,
+        borderRadius: 5,
+        display: 'flex',
+        justifyContent:'center',
+    }
 })
 
 export { ItemComponent }

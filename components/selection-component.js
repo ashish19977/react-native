@@ -1,15 +1,29 @@
-import React, { useState } from 'react'
-import { Picker, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import { Picker, StyleSheet, View } from 'react-native'
+import * as Tts from 'expo-speech'
+
 
 const SelectionComponent = React.memo(props => {
+    
+    const setCountry = async country => {
+        const isPlaying = await Tts.isSpeakingAsync()
+        if(isPlaying)
+            Tts.stop()  
+        props.setCountry(country)
+    }
+
+    const setCat = async cat => {
+        const isPlaying = await Tts.isSpeakingAsync()
+        if(isPlaying)
+            Tts.stop()  
+        props.setCat(cat)
+    }    
     return(
         <View style={styles.main}>
-            {/* business entertainment general health science sports technology */}
-            
             <Picker
                 selectedValue = { props.selectedCat }
                 style = {{ height: 40, width: 180 }}
-                onValueChange = { (itemValue,itemIndex) => props.setCat(itemValue)}
+                onValueChange = { (itemValue,itemIndex) => setCat(itemValue)}
             >
                 <Picker.Item color='#3498db' label='Business' value='business'/>
                 <Picker.Item color='#3498db' label='Entertainment' value='entertainment'/>
@@ -24,7 +38,7 @@ const SelectionComponent = React.memo(props => {
                 style={{ color:'red'}}
                 selectedValue = { props.selectedCountry }
                 style = {{ height: 40, width: 150 }}
-                onValueChange = { (itemValue,itemIndex) => props.setCountry(itemValue)}
+                onValueChange = { (itemValue,itemIndex) => setCountry(itemValue)}
             >
                 <Picker.Item color='#d35400' label='India' value='in'/>
                 <Picker.Item color='#d35400' label='Australia' value='au'/>

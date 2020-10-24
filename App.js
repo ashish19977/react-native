@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SelectionComponent } from './components/selection-component';
 import { NewsListComponent } from './components/news-list'
-import { fetchNews } from './services/fetch-news-service';
+import { fetchNews } from './services';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppLoading } from 'expo'
 
@@ -58,13 +58,12 @@ export default function App() {
   },[selectedCountry,selectedCat])
   
   if(!isReady){
-    console.log('in app loading')
     return <AppLoading startAsync={loadApp()} onFinish= {setIsReady(true)} onError={console.log('App loading failed')}/>
   }
   return ( 
     <View style={styles.container}>
       <SelectionComponent setCountry = { setCountry } selectedCountry = { selectedCountry } selectedCat ={selectedCat} setCat ={setCat}/>
-      <NewsListComponent data = { data.articles }/>
+      <NewsListComponent data = { data.articles } selectedCountry = { selectedCountry } />
     </View>
   )
 }
